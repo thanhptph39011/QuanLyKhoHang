@@ -1,6 +1,6 @@
 package com.example.quanlykhohang.Model;
 
-public class sanPham {
+public class SanPham {
     private int maSp;
     private int maLoai;
     private String tenSp;
@@ -8,10 +8,10 @@ public class sanPham {
     private int soLuong;
     private String moTa;
 
-    public sanPham() {
+    public SanPham() {
     }
 
-    public sanPham(int maSp, int maLoai, String tenSp, int gia, int soLuong, String moTa) {
+    public SanPham(int maSp, int maLoai, String tenSp, int gia, int soLuong, String moTa) {
         this.maSp = maSp;
         this.maLoai = maLoai;
         this.tenSp = tenSp;

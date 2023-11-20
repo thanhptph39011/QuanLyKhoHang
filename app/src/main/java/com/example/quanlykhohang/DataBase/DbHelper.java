@@ -28,7 +28,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String createTableHoaDon = "create table HoaDon(maHoaDon integer primary key autoincrement, soHoaDon text not null, maUser integer references User(maUser), loaiHoaDon integer not null, ngayThang date not null)";
         db.execSQL(createTableHoaDon);
         //Bảng CtHoaDon
-        String createTableCtHoaDon = "create table CtHoaDon(maSp REFERENCES SanPham(maSp), maHoaDon REFERENCES HoaDon(maHoaDon),soLuong integer not null,donGia integet not null  ) ";
+        String createTableCtHoaDon = "create table CtHoaDon( maCtHd integer primary key autoincrement,maSp REFERENCES SanPham(maSp), maHoaDon REFERENCES HoaDon(maHoaDon),soLuong integer not null,donGia integet not null  ) ";
         db.execSQL(createTableCtHoaDon);
     }
 

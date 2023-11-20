@@ -1,20 +1,20 @@
 package com.example.quanlykhohang.Model;
 
-public class nguoiDung {
+public class NguoiDung {
     private int maNguoiDung;
     private String userName;
     private String passWord;
     private String fullName;
     private String email;
 
-    public nguoiDung() {
+    public NguoiDung() {
     }
 
-    public nguoiDung(String email) {
+    public NguoiDung(String email) {
         this.email = email;
     }
 
-    public nguoiDung(int maNguoiDung, String userName, String passWord, String fullName) {
+    public NguoiDung(int maNguoiDung, String userName, String passWord, String fullName) {
         this.maNguoiDung = maNguoiDung;
         this.userName = userName;
         this.passWord = passWord;

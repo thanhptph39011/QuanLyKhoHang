@@ -1,13 +1,13 @@
 package com.example.quanlykhohang.Model;
 
-public class theLoai {
+public class TheLoai {
     private int maTheLoai;
     private String tenTheLoai;
 
-    public theLoai() {
+    public TheLoai() {
     }
 
-    public theLoai(int maTheLoai, String tenTheLoai) {
+    public TheLoai(int maTheLoai, String tenTheLoai) {
         this.maTheLoai = maTheLoai;
         this.tenTheLoai = tenTheLoai;
     }
