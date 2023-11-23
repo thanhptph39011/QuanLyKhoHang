@@ -21,9 +21,11 @@ public class DbHelper extends SQLiteOpenHelper {
 //Bảng  thể loại
         String createTableTheLoai = "create table TheLoai(maLoai integer primary key autoincrement,tenLoai text not null )";
         db.execSQL(createTableTheLoai);
+db.execSQL("insert into TheLoai(tenLoai) values('Hang Nhap Khau')");
         //Bảng sản phẩm
         String createTableSanPham = "create table SanPham(maSp integer primary key autoincrement, maLoai integer references TheLoai(maLoai),tenSp text not null, gia integer not null, soLuong integer not null, moTa text not null)";
         db.execSQL(createTableSanPham);
+        db.execSQL("insert into SanPham(maLoai,tenSp,gia,soLuong,moTa) values(1,'Tủ Lạnh',20000,2,'Beatiful')");
         //Bảng hoá đơn
         String createTableHoaDon = "create table HoaDon(maHoaDon integer primary key autoincrement, soHoaDon text not null, maUser integer references User(maUser), loaiHoaDon integer not null, ngayThang date not null)";
         db.execSQL(createTableHoaDon);

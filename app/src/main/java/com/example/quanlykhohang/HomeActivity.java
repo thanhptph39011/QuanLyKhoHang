@@ -14,8 +14,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.quanlykhohang.Dao.UserDao;
 import com.example.quanlykhohang.Fragments.AddUserFragment;
 import com.example.quanlykhohang.Fragments.ChangeFragment;
 import com.example.quanlykhohang.Fragments.CtHoaDonFragment;
@@ -23,6 +25,7 @@ import com.example.quanlykhohang.Fragments.HoaDonFragment;
 import com.example.quanlykhohang.Fragments.SanPhamFragment;
 import com.example.quanlykhohang.Fragments.TheLoaiFragment;
 import com.example.quanlykhohang.Fragments.ThongKeFragment;
+import com.example.quanlykhohang.Model.NguoiDung;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
@@ -34,6 +37,7 @@ public class HomeActivity extends AppCompatActivity {
     NavigationView nav;
     BottomNavigationView bottomNavigationView;
     View view;
+    UserDao userDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,20 @@ public class HomeActivity extends AppCompatActivity {
         //sét mẫu icon về bản gốc
         nav.setItemIconTintList(null);
         view = nav.getHeaderView(0);
+// check đăng nhập
+        TextView tvWelcome = view.findViewById(R.id.tvWellcome);
+        Intent intent = getIntent();
+        String user = intent.getStringExtra("user");
+        if(user.equalsIgnoreCase("admin")){
+            nav.getMenu().findItem(R.id.themNguoiDung).setVisible(true);
+            Toast.makeText(this, "Wellcome Admin", Toast.LENGTH_SHORT).show();
+        }else{
+            userDao = new UserDao(this);
+            NguoiDung nd = userDao.getID(user);
+            String userName = nd.getFullName();
+            tvWelcome.setText("Wellcome: "+userName);
+            Toast.makeText(this, "Wellcome thủ kho", Toast.LENGTH_SHORT).show();
+        }
         nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

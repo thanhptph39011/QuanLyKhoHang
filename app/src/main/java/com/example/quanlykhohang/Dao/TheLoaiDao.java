@@ -49,4 +49,14 @@ public class TheLoaiDao {
         }
         return list;
     }
+    public TheLoai getID(String id){
+        String sql ="select * from TheLoai where maLoai=?";
+        List<TheLoai> list = getData(sql,id);
+        if(!list.isEmpty()){
+            return list.get(0);
+        }else{
+            return null;
+        }
+
+    }
 }
