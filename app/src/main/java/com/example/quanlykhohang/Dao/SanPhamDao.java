@@ -28,7 +28,7 @@ public class SanPhamDao {
         values.put("tenSp",sp.getTenSp());
         values.put("gia",sp.getGia());
         values.put("soLuong",sp.getSoLuong());
-        values.put("moTa",sp.getMaLoai());
+        values.put("moTa",sp.getMoTa());
         long row = db.insert("SanPham", null, values);
         return (row > 0);
     }
@@ -38,7 +38,7 @@ public class SanPhamDao {
         values.put("tenSp",sp.getTenSp());
         values.put("gia",sp.getGia());
         values.put("soLuong",sp.getSoLuong());
-        values.put("moTa",sp.getMaLoai());
+        values.put("moTa",sp.getMoTa());
         long row = db.update("SanPham",  values,"maSp=?",new String[]{String.valueOf(sp.getMaSp())});
         return (row > 0);
     }
@@ -60,5 +60,10 @@ public class SanPhamDao {
             list.add(sp);
         }
         return list;
+    }
+    public SanPham getID(String id){
+        String sql ="select * from SanPham where maSp=?";
+        List<SanPham> list = getData(sql,id);
+        return list.get(0);
     }
 }

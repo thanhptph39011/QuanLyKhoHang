@@ -40,7 +40,7 @@ public class SanPhamFragment extends Fragment {
     ArrayList<SanPham> templist;
     Dialog dialog;
     FloatingActionButton fab;
-    EditText edtMaSp, edtTenSp, edtGia, edtSL, edtGhiChu, edtTmKiemSp;
+    EditText edtMaSp, edtTenSp, edtGia, edtSL, edtMoTa, edtTmKiemSp;
     Spinner spinner;
     ImageView btnSave, btnHuy;
     static SanPhamDao sanPhamDao;
@@ -127,7 +127,7 @@ public class SanPhamFragment extends Fragment {
         edtTenSp = dialog.findViewById(R.id.edtTenSp_itemSp);
         edtGia = dialog.findViewById(R.id.edtGia_itemSp);
         edtSL = dialog.findViewById(R.id.edtSl_itemSp);
-        edtGhiChu = dialog.findViewById(R.id.edtMoTa_itemSp);
+        edtMoTa = dialog.findViewById(R.id.edtMoTa_itemSp);
         spinner = dialog.findViewById(R.id.spTheLoai_itemSp);
         btnSave = dialog.findViewById(R.id.btnAdd_Sp);
         btnHuy = dialog.findViewById(R.id.btnHuyAdd_Sp);
@@ -163,7 +163,7 @@ public class SanPhamFragment extends Fragment {
             edtTenSp.setText(item.getTenSp());
             edtGia.setText(String.valueOf(item.getGia()));
             edtSL.setText(String.valueOf(item.getSoLuong()));
-            edtGhiChu.setText(item.getMoTa());
+            edtMoTa.setText(item.getMoTa());
             for (int i = 0; i < listTl.size(); i++) {
                 if (item.getMaLoai() == (listTl.get(i).getMaTheLoai())) {
                     position = i;
@@ -181,7 +181,7 @@ public class SanPhamFragment extends Fragment {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (edtTenSp.equals("") || edtGia.equals("") || edtSL.equals("") || edtGhiChu.equals("")) {
+                if (edtTenSp.equals("") || edtGia.equals("") || edtSL.equals("") || edtMoTa.equals("")) {
                     Toast.makeText(context, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
                 }
 
@@ -190,7 +190,7 @@ public class SanPhamFragment extends Fragment {
                 item.setTenSp(edtTenSp.getText().toString());
                 item.setGia(Integer.parseInt(edtGia.getText().toString()));
                 item.setSoLuong(Integer.parseInt(edtSL.getText().toString()));
-                item.setMoTa(edtGhiChu.getText().toString());
+                item.setMoTa(edtMoTa.getText().toString());
                 item.setMaLoai(maTl);
                 if (validate() > 0) {
                     if (type == 0) {
@@ -248,7 +248,7 @@ public class SanPhamFragment extends Fragment {
 
     public int validate() {
         int check = 1;
-        if (edtTenSp.length() == 0 || edtGia.length() == 0 || edtGhiChu.length() == 0 || edtSL.length() == 0) {
+        if (edtTenSp.length() == 0 || edtGia.length() == 0 || edtMoTa.length() == 0 || edtSL.length() == 0) {
             Toast.makeText(getActivity(), "Vui lòng nhập dầy đủ thông tin", Toast.LENGTH_SHORT).show();
             check = -1;
         } else {

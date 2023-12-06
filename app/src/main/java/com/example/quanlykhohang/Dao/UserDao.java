@@ -24,7 +24,6 @@ public class UserDao {
     }
     public boolean insertUser(NguoiDung nd) {
         ContentValues values = new ContentValues();
-        values.put("maUser", nd.getMaNguoiDung());
         values.put("userName", nd.getUserName());
         values.put("passWord", nd.getPassWord());
         values.put("fullName",nd.getFullName());
@@ -32,15 +31,13 @@ public class UserDao {
         long row = db.insert("User", null, values);
         return (row > 0);
     }
-    public boolean updateUser(NguoiDung nd) {
+    public long updatePass(NguoiDung obj) {
         ContentValues values = new ContentValues();
-        values.put("maUser", nd.getMaNguoiDung());
-        values.put("userName", nd.getUserName());
-        values.put("passWord", nd.getPassWord());
-        values.put("fullName",nd.getFullName());
-        values.put("email", nd.getEmail());
-        long row = db.update("User", values,"maUser=?",new String[]{String.valueOf(nd.getMaNguoiDung())});
-        return (row > 0);
+        values.put("userName", obj.getUserName());
+        values.put("passWord", obj.getPassWord());
+        values.put("fullName",obj.getFullName());
+        values.put("email",obj.getEmail());
+        return db.update("User", values, "maUser=?", new String[]{String.valueOf(obj.getMaNguoiDung())});
     }
     public boolean deleteUser(int maUser) {
         long row = db.delete("User", "maUser=?", new String[]{String.valueOf(maUser)});
@@ -61,16 +58,22 @@ public class UserDao {
         }
         return list;
     }
-    public int CheckLogin(String id,String password){
-        String sql = "select * from User where userName=? and passWord=?";
-        List<NguoiDung> list=getData(sql,id,password);
-        if (list.size()==0){
-            return -1;
-        }return 1;
-    }
     public NguoiDung getID(String id){
         String sql ="select * from User where maUser=?";
         List<NguoiDung> list = getData(sql,id);
-        return list.get(0);
+        if(!list.isEmpty()){
+            return list.get(0);
+        }else{
+            return null;
+        }
+    }
+    public NguoiDung getUserName(String userName){
+        String sql ="select * from User where userName=?";
+        List<NguoiDung> list = getData(sql,userName);
+        if(!list.isEmpty()){
+            return list.get(0);
+        }else{
+            return null;
+        }
     }
 }

@@ -14,11 +14,11 @@ public class NguoiDung {
         this.email = email;
     }
 
-    public NguoiDung(int maNguoiDung, String userName, String passWord, String fullName) {
-        this.maNguoiDung = maNguoiDung;
+    public NguoiDung(String userName, String passWord, String fullName,String email) {
         this.userName = userName;
         this.passWord = passWord;
         this.fullName = fullName;
+        this.email = email;
     }
 
     public int getMaNguoiDung() {

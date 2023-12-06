@@ -19,8 +19,7 @@ import android.widget.Toast;
 
 import com.example.quanlykhohang.Dao.UserDao;
 import com.example.quanlykhohang.Fragments.AddUserFragment;
-import com.example.quanlykhohang.Fragments.ChangeFragment;
-import com.example.quanlykhohang.Fragments.CtHoaDonFragment;
+import com.example.quanlykhohang.Fragments.ChangePassFragment;
 import com.example.quanlykhohang.Fragments.HoaDonFragment;
 import com.example.quanlykhohang.Fragments.SanPhamFragment;
 import com.example.quanlykhohang.Fragments.TheLoaiFragment;
@@ -38,6 +37,8 @@ public class HomeActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     View view;
     UserDao userDao;
+    NguoiDung nd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +61,19 @@ public class HomeActivity extends AppCompatActivity {
         TextView tvWelcome = view.findViewById(R.id.tvWellcome);
         Intent intent = getIntent();
         String user = intent.getStringExtra("user");
-        if(user.equalsIgnoreCase("admin")){
+        if (user.equalsIgnoreCase("admin")) {
             nav.getMenu().findItem(R.id.themNguoiDung).setVisible(true);
+            nav.getMenu().findItem(R.id.doiMk).setVisible(false);
             Toast.makeText(this, "Wellcome Admin", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             userDao = new UserDao(this);
-            NguoiDung nd = userDao.getID(user);
-            String userName = nd.getFullName();
-            tvWelcome.setText("Wellcome: "+userName);
+            nd = userDao.getID(user);
+//            String userName = nd.getFullName();
+//            tvWelcome.setText("Wellcome: "+userName);
             Toast.makeText(this, "Wellcome thủ kho", Toast.LENGTH_SHORT).show();
         }
+        HoaDonFragment fragment = new HoaDonFragment();
+        replaceFrg(fragment);
         nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -80,7 +84,7 @@ public class HomeActivity extends AppCompatActivity {
                     AddUserFragment fragment = new AddUserFragment();
                     replaceFrg(fragment);
                 } else if (item.getItemId() == R.id.doiMk) {
-                    ChangeFragment fragment = new ChangeFragment();
+                    ChangePassFragment fragment = new ChangePassFragment();
                     replaceFrg(fragment);
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
@@ -115,9 +119,6 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.hoaDon) {
                     HoaDonFragment fragment = new HoaDonFragment();
-                    replaceFrg(fragment);
-                } else if (item.getItemId() == R.id.CtHoaDon) {
-                    CtHoaDonFragment fragment = new CtHoaDonFragment();
                     replaceFrg(fragment);
                 } else if (item.getItemId() == R.id.theLoai) {
                     TheLoaiFragment fragment = new TheLoaiFragment();

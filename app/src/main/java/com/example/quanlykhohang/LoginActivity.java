@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.quanlykhohang.Dao.UserDao;
+import com.example.quanlykhohang.Model.NguoiDung;
 
 public class LoginActivity extends AppCompatActivity {
     EditText edtUserName, edtPassWord;
@@ -44,16 +45,35 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (userDao.CheckLogin(userName, passWord) > 0 || (userName.equals("admin") && passWord.equals("admin"))) {
+                boolean checkLogin = false;
+                NguoiDung nd = userDao.getUserName(userName);
+                if (nd != null) {
+                    if (passWord.equals(nd.getPassWord())) {
+                        checkLogin = true;
+                    }else{
+                        Toast.makeText(LoginActivity.this, "SAi PassWord", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                }else{
+                    if( userName.equals("admin") && passWord.equals("admin")){
+                        checkLogin=true;
+                    }else{
+                        Toast.makeText(LoginActivity.this, "SAi user name hoặc pass", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
+                if(checkLogin=true){
+
                     Toast.makeText(LoginActivity.this, "Đăng nhập Succ", Toast.LENGTH_SHORT).show();
                     rememberUser(userName, passWord, chkLuuMk.isChecked());
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     intent.putExtra("user", userName);
                     startActivity(intent);
                     finish();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thất bại. Vui lòng kiểm tra lại", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
         btnHuy.setOnClickListener(new View.OnClickListener() {

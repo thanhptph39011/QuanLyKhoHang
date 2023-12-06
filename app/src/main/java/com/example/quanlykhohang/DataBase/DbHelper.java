@@ -10,7 +10,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String Db_name = "KhoHang";
 
     public DbHelper(@Nullable Context context) {
-        super(context, Db_name, null, 1);
+        super(context, Db_name, null, 3);
     }
 
     @Override
@@ -18,6 +18,7 @@ public class DbHelper extends SQLiteOpenHelper {
 //Bảng người dùng
         String createTableUser = "create table User(maUser integer primary key autoincrement, userName text not null, passWord text not null, fullName text not null, email text not null )";
         db.execSQL(createTableUser);
+        db.execSQL("insert into User(userName,passWord,fullName,email) values('thukho1','12345','Pham Thanh','thanh123@gmail.com')");
 //Bảng  thể loại
         String createTableTheLoai = "create table TheLoai(maLoai integer primary key autoincrement,tenLoai text not null )";
         db.execSQL(createTableTheLoai);
