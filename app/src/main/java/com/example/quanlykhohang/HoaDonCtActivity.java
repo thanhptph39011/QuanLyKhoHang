@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.quanlykhohang.Adapter.CtHoaDonAdapter;
 import com.example.quanlykhohang.Adapter.SanPhamSpinnerAdapter;
 import com.example.quanlykhohang.Dao.CtHoaDonDao;
+import com.example.quanlykhohang.Dao.KhoDao;
 import com.example.quanlykhohang.Dao.SanPhamDao;
 import com.example.quanlykhohang.Model.CtHoaDon;
 import com.example.quanlykhohang.Model.SanPham;
@@ -93,15 +94,18 @@ public class HoaDonCtActivity extends AppCompatActivity {
                     Toast.makeText(HoaDonCtActivity.this, "Nhập số lượng", Toast.LENGTH_SHORT).show();
                     edtSoLuong.requestFocus();
                     return;
-                } else {
+                }
+                else {
                     hoaDonCt = new CtHoaDon();
                     hoaDonCt.setSoLuong(Integer.parseInt(soluong));
                     hoaDonCt.setMaHoaDon(maHd);
                     hoaDonCt.setMaSp(maSp);
                     hoaDonCt.setDonGia(giatien);
                     if (ctHoaDonDao.insertHoaDonCt(hoaDonCt)) {
-                        Toast.makeText(HoaDonCtActivity.this, "Thêm  succ", Toast.LENGTH_SHORT).show();
+                        sanPhamDao.updateSoLuong(maSp, hoaDonCt.getSoLuong());
+                        Toast.makeText(HoaDonCtActivity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
                         edtSoLuong.setText("");
+                        // Cập nhật lại ListView
                         list.clear();
                         list.addAll(ctHoaDonDao.getAll(maHd));
                         adapter.notifyDataSetChanged();
@@ -109,6 +113,7 @@ public class HoaDonCtActivity extends AppCompatActivity {
                         Toast.makeText(HoaDonCtActivity.this, "Thêm fail", Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 capNhapLv();
             }
         });
@@ -128,5 +133,20 @@ public class HoaDonCtActivity extends AppCompatActivity {
         lvSp.setAdapter(adapter);
         int tongTien = adapter.tinhTongTien();
         tvTongTien.setText(tongTien + " $");
+    }
+    public int validate_hdct() {
+        KhoDao kD = new KhoDao(HoaDonCtActivity.this);
+        int check = 1;
+        if (edtSoLuong.getText().length() == 0) {
+            Toast.makeText(HoaDonCtActivity.this, "Không được để trống số lượng", Toast.LENGTH_SHORT).show();
+            check = -1;
+        } else if (spnSanPham.getSelectedItem() == null) {
+            Toast.makeText(HoaDonCtActivity.this, "Chưa có dữ liệu sản phẩm", Toast.LENGTH_SHORT).show();
+            check = -1;
+        } else if (Integer.parseInt(edtSoLuong.getText().toString()) > kD.getSLConLai(maSp)) {
+            Toast.makeText(HoaDonCtActivity.this, "Số lượng trong kho không đủ", Toast.LENGTH_SHORT).show();
+            check = -1;
+        }
+        return check;
     }
 }

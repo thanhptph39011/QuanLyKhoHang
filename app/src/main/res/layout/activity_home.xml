@@ -22,7 +22,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#2DA2A6"
+                android:background="#0FD6DD"
                 android:minHeight="?attr/actionBarSize" />
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -36,7 +36,7 @@
             android:id="@+id/botomMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#2DA2A6"
+            android:background="#0FD6DD"
             app:itemIconTint="@color/custom_color_botom"
             app:itemTextColor="@color/custom_color_botom"
             app:menu="@menu/bottom_menu" />

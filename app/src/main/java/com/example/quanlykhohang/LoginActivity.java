@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (passWord.equals(nd.getPassWord())) {
                         checkLogin = true;
                     }else{
-                        Toast.makeText(LoginActivity.this, "SAi PassWord", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Sai PassWord", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                     if( userName.equals("admin") && passWord.equals("admin")){
                         checkLogin=true;
                     }else{
-                        Toast.makeText(LoginActivity.this, "SAi user name hoặc pass", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Sai user name hoặc pass", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }

@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.quanlykhohang.Dao.CtHoaDonDao;
+import com.example.quanlykhohang.Dao.KhoDao;
 import com.example.quanlykhohang.Dao.SanPhamDao;
 import com.example.quanlykhohang.Model.CtHoaDon;
 import com.example.quanlykhohang.Model.SanPham;
@@ -87,6 +88,8 @@ public class CtHoaDonAdapter extends ArrayAdapter<CtHoaDon> {
                             list.addAll(ctHoaDonDao.getAll(item.getMaHoaDon()));
                             notifyDataSetChanged();
                             Toast.makeText(context, "Delete Succ", Toast.LENGTH_SHORT).show();
+                            KhoDao khoDao = new KhoDao(context);
+
                             if (onDeleteSuccessListener != null) {
                                 onDeleteSuccessListener.onDeleteSuccess();
                             }
