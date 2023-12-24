@@ -7,11 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.quanlykhohang.DataBase.DbHelper;
+import com.example.quanlykhohang.Model.HangTon;
+import com.example.quanlykhohang.Model.ThongKe;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class ThongKeDao {
@@ -24,87 +28,270 @@ public class ThongKeDao {
         dbHelper = new DbHelper(context);
         db = dbHelper.getWritableDatabase();
     }
+    @SuppressLint("Range")
+    public List<HangTon> thongKeSanPham() {
+        List<HangTon> productStatisticsList = new ArrayList<>();
+        String query = "SELECT tenSp, soLuong, (soLuong * gia) AS tongTien FROM SanPham";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String tenSp = cursor.getString(cursor.getColumnIndex("tenSp"));
+                int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
+                int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
+
+                HangTon productStatistics = new HangTon(tenSp, soLuong, tongTien);
+                productStatisticsList.add(productStatistics);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return productStatisticsList;
+    }
 
     @SuppressLint("Range")
-    public int thongKeSanPhamXuat(Date startDate, Date endDate) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        int soLuongXuat = 0;
+    public List<ThongKe> thongKeXuatTheoNgay() {
+        List<ThongKe> danhSachThongKe = new ArrayList<>();
 
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String start = sdf.format(startDate);
-            String end = sdf.format(endDate);
+        // Lấy ngày hiện tại
+        String ngayHienTai = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-            String query = "SELECT SUM(soLuong) FROM CtHoaDon " +
-                    "JOIN HoaDon ON CtHoaDon.maHoaDon = HoaDon.maHoaDon " +
-                    "WHERE HoaDon.loaiHoaDon = 1 AND HoaDon.ngayThang BETWEEN '" + start + "' AND '" + end + "'";
-            Cursor cursor = db.rawQuery(query, null);
+        // Truy vấn để thống kê số lượng sản phẩm và tổng tiền theo ngày hiện tại
+        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+                "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
+                " WHERE HoaDon.loaiHoaDon = 1 AND HoaDon.ngayThang = ? " +
+                "GROUP BY HoaDon.ngayThang";
+        Cursor cursor = db.rawQuery(query, new String[]{ngayHienTai});
 
-            if (cursor.moveToFirst()) {
-                soLuongXuat = cursor.getInt(0);
-            }
+        if (cursor.moveToFirst()) {
+            int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
+            int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
-            cursor.close();
-        } catch (Exception e) {
-            Log.e("ThongKeDao", "Error: " + e.getMessage());
-        } finally {
-            db.close();
+            ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuong(soLuong);
+            thongKe.setTongTien(tongTien);
+            danhSachThongKe.add(thongKe);
         }
 
-        return soLuongXuat;
+        cursor.close();
+        db.close();
+
+        return danhSachThongKe;
     }
 
-    public int thongKeSanPhamNhap(Date startDate, Date endDate) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        int soLuongNhap = 0;
+    @SuppressLint("Range")
+    public List<ThongKe> thongKeXuatTheoTuan() {
+        List<ThongKe> danhSachThongKe = new ArrayList<>();
 
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String start = sdf.format(startDate);
-            String end = sdf.format(endDate);
+        // Lấy ngày hiện tại
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        String startOfWeek = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
 
-            String query = "SELECT SUM(soLuong) FROM CtHoaDon " +
-                    "JOIN HoaDon ON CtHoaDon.maHoaDon = HoaDon.maHoaDon " +
-                    "WHERE HoaDon.loaiHoaDon = 0 AND HoaDon.ngayThang BETWEEN '" + start + "' AND '" + end + "'";
-            Cursor cursor = db.rawQuery(query, null);
+        calendar.add(Calendar.DATE, 6);
+        String endOfWeek = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
 
-            if (cursor.moveToFirst()) {
-                soLuongNhap = cursor.getInt(0);
-            }
+        // Truy vấn để thống kê số lượng sản phẩm và tổng tiền trong tuần
+        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+                "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
+                " WHERE HoaDon.loaiHoaDon = 1 AND HoaDon.ngayThang >= ? AND HoaDon.ngayThang <= ?";
+        Cursor cursor = db.rawQuery(query, new String[]{startOfWeek, endOfWeek});
 
-            cursor.close();
-        } catch (Exception e) {
-            Log.e("ThongKeDao", "Error: " + e.getMessage());
-        } finally {
-            db.close();
+        if (cursor.moveToFirst()) {
+            int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
+            int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
+
+            ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuong(soLuong);
+            thongKe.setTongTien(tongTien);
+            danhSachThongKe.add(thongKe);
         }
-        return soLuongNhap;
+
+        cursor.close();
+        db.close();
+
+        return danhSachThongKe;
     }
 
-    public int thongKeSanPhamTon(Date endDate) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        int soLuongTon = 0;
+    @SuppressLint("Range")
+    public List<ThongKe> thongKeXuatTheoThang() {
+        List<ThongKe> danhSachThongKe = new ArrayList<>();
 
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String end = sdf.format(endDate);
+        // Lấy tháng và năm hiện tại
+        Calendar cal = Calendar.getInstance();
+        int thangHienTai = cal.get(Calendar.MONTH) + 1; // Tháng trong Java tính từ 0 đến 11
+        int namHienTai = cal.get(Calendar.YEAR);
 
-            String query = "SELECT SUM(soLuong) FROM SanPham WHERE maSp IN (SELECT maSp FROM CtHoaDon " +
-                    "JOIN HoaDon ON CtHoaDon.maHoaDon = HoaDon.maHoaDon " +
-                    "WHERE HoaDon.ngayThang <= '" + end + "')";
-            Cursor cursor = db.rawQuery(query, null);
+        // Truy vấn để thống kê số lượng sản phẩm và tổng tiền theo tháng hiện tại
+        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien  " +
+                "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
+                " WHERE HoaDon.loaiHoaDon = 1 AND strftime('%m', HoaDon.ngayThang) = ? AND strftime('%Y', HoaDon.ngayThang) = ?";
 
-            if (cursor.moveToFirst()) {
-                soLuongTon = cursor.getInt(0);
-            }
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(thangHienTai), String.valueOf(namHienTai)});
 
-            cursor.close();
-        } catch (Exception e) {
-            Log.e("ThongKeDao", "Error: " + e.getMessage());
-        } finally {
-            db.close();
+        if (cursor.moveToFirst()) {
+            int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
+            int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
+
+            ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuong(soLuong);
+            thongKe.setTongTien(tongTien);
+            danhSachThongKe.add(thongKe);
         }
 
-        return soLuongTon;
+        cursor.close();
+        db.close();
+
+        return danhSachThongKe;
+    }
+
+    @SuppressLint("Range")
+    public List<ThongKe> thongKeXuatTheoNgayTuChon(String startDate, String endDate) {
+        List<ThongKe> danhSachThongKe = new ArrayList<>();
+
+        // Truy vấn để thống kê số lượng sản phẩm và tổng tiền trong khoảng thời gian nhập từ ngày đến ngày
+        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+                "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
+                "WHERE HoaDon.loaiHoaDon = 1 AND HoaDon.ngayThang >= ? AND HoaDon.ngayThang <= ?";
+        Cursor cursor = db.rawQuery(query, new String[]{startDate, endDate});
+
+        if (cursor.moveToFirst()) {
+            int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
+            int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
+
+            ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuong(soLuong);
+            thongKe.setTongTien(tongTien);
+            danhSachThongKe.add(thongKe);
+        }
+
+        cursor.close();
+        db.close();
+
+        return danhSachThongKe;
+    }
+
+    @SuppressLint("Range")
+    public List<ThongKe> thongKeNhapTheoNgay() {
+        List<ThongKe> danhSachThongKe = new ArrayList<>();
+
+        // Lấy ngày hiện tại
+        String ngayHienTai = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        // Truy vấn để thống kê số lượng sản phẩm và tổng tiền theo ngày hiện tại
+        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+                "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
+                " WHERE HoaDon.loaiHoaDon = 0 AND HoaDon.ngayThang = ? " +
+                "GROUP BY HoaDon.ngayThang";
+        Cursor cursor = db.rawQuery(query, new String[]{ngayHienTai});
+
+        if (cursor.moveToFirst()) {
+            int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
+            int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
+
+            ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuong(soLuong);
+            thongKe.setTongTien(tongTien);
+            danhSachThongKe.add(thongKe);
+        }
+
+        cursor.close();
+        db.close();
+
+        return danhSachThongKe;
+    }
+
+    @SuppressLint("Range")
+    public List<ThongKe> thongKeNhapTheoTuan() {
+        List<ThongKe> danhSachThongKe = new ArrayList<>();
+
+        // Lấy ngày hiện tại
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        String startOfWeek = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
+
+        calendar.add(Calendar.DATE, 6);
+        String endOfWeek = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
+
+        // Truy vấn để thống kê số lượng sản phẩm và tổng tiền trong tuần
+        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+                "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
+                " WHERE HoaDon.loaiHoaDon = 0 AND HoaDon.ngayThang >= ? AND HoaDon.ngayThang <= ?";
+        Cursor cursor = db.rawQuery(query, new String[]{startOfWeek, endOfWeek});
+
+        if (cursor.moveToFirst()) {
+            int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
+            int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
+
+            ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuong(soLuong);
+            thongKe.setTongTien(tongTien);
+            danhSachThongKe.add(thongKe);
+        }
+
+        cursor.close();
+        db.close();
+
+        return danhSachThongKe;
+    }
+
+    @SuppressLint("Range")
+    public List<ThongKe> thongKeNhapTheoThang() {
+        List<ThongKe> danhSachThongKe = new ArrayList<>();
+
+        // Lấy tháng và năm hiện tại
+        Calendar cal = Calendar.getInstance();
+        int thangHienTai = cal.get(Calendar.MONTH) + 1; // Tháng trong Java tính từ 0 đến 11
+        int namHienTai = cal.get(Calendar.YEAR);
+
+        // Truy vấn để thống kê số lượng sản phẩm và tổng tiền theo tháng hiện tại
+        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien  " +
+                "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
+                " WHERE HoaDon.loaiHoaDon = 0 AND strftime('%m', HoaDon.ngayThang) = ? AND strftime('%Y', HoaDon.ngayThang) = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(thangHienTai), String.valueOf(namHienTai)});
+
+        if (cursor.moveToFirst()) {
+            int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
+            int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
+
+            ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuong(soLuong);
+            thongKe.setTongTien(tongTien);
+            danhSachThongKe.add(thongKe);
+        }
+
+        cursor.close();
+        db.close();
+
+        return danhSachThongKe;
+    }
+
+    @SuppressLint("Range")
+    public List<ThongKe> thongKeNhapTheoNgayTuChon(String startDate, String endDate) {
+        List<ThongKe> danhSachThongKe = new ArrayList<>();
+
+        // Truy vấn để thống kê số lượng sản phẩm và tổng tiền trong khoảng thời gian nhập từ ngày đến ngày
+        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+                "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
+                "WHERE HoaDon.loaiHoaDon = 0 AND HoaDon.ngayThang >= ? AND HoaDon.ngayThang <= ?";
+        Cursor cursor = db.rawQuery(query, new String[]{startDate, endDate});
+
+        if (cursor.moveToFirst()) {
+            int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
+            int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
+
+            ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuong(soLuong);
+            thongKe.setTongTien(tongTien);
+            danhSachThongKe.add(thongKe);
+        }
+
+        cursor.close();
+        db.close();
+
+        return danhSachThongKe;
     }
 }
