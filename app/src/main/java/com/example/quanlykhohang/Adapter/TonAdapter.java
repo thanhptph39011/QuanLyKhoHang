@@ -22,7 +22,7 @@ public class TonAdapter extends ArrayAdapter<HangTon> {
     private Context context;
     TonFragment fragment;
     ArrayList<HangTon> list;
-    TextView tvMaSp, tvSoluong, tvTongTien;
+    TextView tvSoluong, tvTongTien,tvmaLoai;
 
     public TonAdapter(@NonNull Context context, TonFragment fragment, ArrayList<HangTon> list) {
         super(context, 0, list);
@@ -40,11 +40,11 @@ public class TonAdapter extends ArrayAdapter<HangTon> {
         }
         final HangTon item  = list.get(position);
         if(item!=null){
-            tvMaSp=v.findViewById(R.id.tvTenSp_tonKho);
             tvSoluong=v.findViewById(R.id.tvSoLuong_tonKho);
             tvTongTien=v.findViewById(R.id.tvTongTien_TonKho);
+            tvmaLoai=v.findViewById(R.id.tvTenTheLoai_tonKho);
             //
-            tvMaSp.setText(item.getMaSp());
+            tvmaLoai.setText(item.getMaLoai());
             tvSoluong.setText(item.getSoLuongTon()+"");
             tvTongTien.setText(item.getTienTonKho()+"");
         }

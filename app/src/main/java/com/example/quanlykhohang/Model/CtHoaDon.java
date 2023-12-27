@@ -6,6 +6,7 @@ public class CtHoaDon {
     private int maHoaDon;
     private int soLuong;
     private int donGia;
+    private int maLoaiHoaDon;
 
     public CtHoaDon() {
     }
@@ -56,5 +57,13 @@ public class CtHoaDon {
 
     public void setDonGia(int donGia) {
         this.donGia = donGia;
+    }
+
+    public int getMaLoaiHoaDon() {
+        return maLoaiHoaDon;
+    }
+
+    public void setMaLoaiHoaDon(int maLoaiHoaDon) {
+        this.maLoaiHoaDon = maLoaiHoaDon;
     }
 }

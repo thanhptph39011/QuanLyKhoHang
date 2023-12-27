@@ -40,6 +40,7 @@ public class HoaDonCtActivity extends AppCompatActivity {
     String tenSp;
     int maSp, giatien;
     int maHd;
+    private int maLoaiHoaDon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class HoaDonCtActivity extends AppCompatActivity {
         ctHoaDonDao = new CtHoaDonDao(this);
         //
         maHd = getIntent().getIntExtra("maHd", 0);
+        maLoaiHoaDon = getIntent().getIntExtra("maLoaiHoaDon", 1);
         edtsoHd.setText(String.valueOf(maHd));
         capNhapLv();
         //Sp sanPham
@@ -86,6 +88,39 @@ public class HoaDonCtActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+//        btnSave.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String soluong = edtSoLuong.getText().toString();
+//                if (soluong.isEmpty()) {
+//                    Toast.makeText(HoaDonCtActivity.this, "Nhập số lượng", Toast.LENGTH_SHORT).show();
+//                    edtSoLuong.requestFocus();
+//                    return;
+//                }
+//                else {
+//                    hoaDonCt = new CtHoaDon();
+//                    hoaDonCt.setSoLuong(Integer.parseInt(soluong));
+//                    hoaDonCt.setMaHoaDon(maHd);
+//                    hoaDonCt.setMaSp(maSp);
+//                    hoaDonCt.setDonGia(giatien);
+//                    if (ctHoaDonDao.insertHoaDonCt(hoaDonCt)) {
+//                        sanPhamDao.updateSoLuong(maSp, hoaDonCt.getSoLuong());
+//                        Toast.makeText(HoaDonCtActivity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+//                        edtSoLuong.setText("");
+//                        // Cập nhật lại ListView
+//                        list.clear();
+//                        list.addAll(ctHoaDonDao.getAll(maHd));
+//                        adapter.notifyDataSetChanged();
+//                    } else {
+//                        Toast.makeText(HoaDonCtActivity.this, "Thêm fail", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//
+//                capNhapLv();
+//            }
+//        });
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,27 +129,58 @@ public class HoaDonCtActivity extends AppCompatActivity {
                     Toast.makeText(HoaDonCtActivity.this, "Nhập số lượng", Toast.LENGTH_SHORT).show();
                     edtSoLuong.requestFocus();
                     return;
-                }
-                else {
+//                } else if (maLoaiHoaDon==1) {
+//                    int availableQuantity = sanPhamDao.getSoLuongSanPham(maSp); // Get the available quantity from the warehouse
+//                    int requestedQuantity = Integer.parseInt(soluong);
+//
+//                    if (requestedQuantity > availableQuantity) {
+//                        Toast.makeText(HoaDonCtActivity.this, "Số lượng trong kho không đủ", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+                } else {
                     hoaDonCt = new CtHoaDon();
                     hoaDonCt.setSoLuong(Integer.parseInt(soluong));
                     hoaDonCt.setMaHoaDon(maHd);
                     hoaDonCt.setMaSp(maSp);
                     hoaDonCt.setDonGia(giatien);
-                    if (ctHoaDonDao.insertHoaDonCt(hoaDonCt)) {
-                        sanPhamDao.updateSoLuong(maSp, hoaDonCt.getSoLuong());
-                        Toast.makeText(HoaDonCtActivity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
-                        edtSoLuong.setText("");
-                        // Cập nhật lại ListView
-                        list.clear();
-                        list.addAll(ctHoaDonDao.getAll(maHd));
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(HoaDonCtActivity.this, "Thêm fail", Toast.LENGTH_SHORT).show();
+                    hoaDonCt.setMaLoaiHoaDon(maLoaiHoaDon);
+                    // Kiểm tra xem sản phẩm đã tồn tại trong hoá đơn chưa
+                    boolean isProductExists = false; //sản phẩm tồn tại
+                    int existingProductIndex = -1; //index sản phẩm hiện có
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getMaSp() == maSp) {
+                            isProductExists = true;
+                            existingProductIndex = i;
+                            break;
+                        }
                     }
-                }
+                    if (isProductExists) {
+                        // Cập nhật số lượng sản phẩm nếu sản phẩm đã tồn tại trong hoá đơn
+                        int newQuantity = list.get(existingProductIndex).getSoLuong() + Integer.parseInt(soluong);
+                        list.get(existingProductIndex).setSoLuong(newQuantity);
+                    } else {
+                        // Thêm sản phẩm mới vào danh sách chi tiết hoá đơn
+                        if (ctHoaDonDao.insertHoaDonCt(hoaDonCt)) {
+                            list.add(hoaDonCt);
+                        } else {
+                            Toast.makeText(HoaDonCtActivity.this, "Thêm fail", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    // Cập nhật lại ListView
+                    adapter.notifyDataSetChanged();
+                    // Cập nhật lại tổng tiền
+                    int tongTien = adapter.tinhTongTien();
+                    tvTongTien.setText(tongTien + " $");
+                    if (maLoaiHoaDon == 0) {
+                        sanPhamDao.updateSoLuong(maSp, hoaDonCt.getSoLuong());
+                    } else {
+                        sanPhamDao.updateSoLuong(maSp, -hoaDonCt.getSoLuong());
+                    }
 
-                capNhapLv();
+
+                    Toast.makeText(HoaDonCtActivity.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+                    edtSoLuong.setText("");
+                }
             }
         });
     }
@@ -134,19 +200,6 @@ public class HoaDonCtActivity extends AppCompatActivity {
         int tongTien = adapter.tinhTongTien();
         tvTongTien.setText(tongTien + " $");
     }
-    public int validate_hdct() {
-        KhoDao kD = new KhoDao(HoaDonCtActivity.this);
-        int check = 1;
-        if (edtSoLuong.getText().length() == 0) {
-            Toast.makeText(HoaDonCtActivity.this, "Không được để trống số lượng", Toast.LENGTH_SHORT).show();
-            check = -1;
-        } else if (spnSanPham.getSelectedItem() == null) {
-            Toast.makeText(HoaDonCtActivity.this, "Chưa có dữ liệu sản phẩm", Toast.LENGTH_SHORT).show();
-            check = -1;
-        } else if (Integer.parseInt(edtSoLuong.getText().toString()) > kD.getSLConLai(maSp)) {
-            Toast.makeText(HoaDonCtActivity.this, "Số lượng trong kho không đủ", Toast.LENGTH_SHORT).show();
-            check = -1;
-        }
-        return check;
-    }
+
+
 }

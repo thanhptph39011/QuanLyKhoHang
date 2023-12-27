@@ -20,7 +20,6 @@ public class ThongKeAdapter extends ArrayAdapter<ThongKe> {
     private Context context;
     NhapFragment fragment;
     ArrayList<ThongKe> list;
-    TextView tvSoluong, tvTongTien;
 
     public ThongKeAdapter(@NonNull Context context, NhapFragment fragment, ArrayList<ThongKe> list) {
         super(context, 0, list);
@@ -40,6 +39,7 @@ public View getView(int position, @Nullable View convertView, @NonNull ViewGroup
         v = inflater.inflate(R.layout.item_thongke, parent, false);
 
         holder = new ViewHolder();
+        holder.soLuongHoaDon=v.findViewById(R.id.tvSoLuongHd_thongKe);
         holder.tvSoluong = v.findViewById(R.id.tvSoLuong_thongKe);
         holder.tvTongTien = v.findViewById(R.id.tvTongTien_ThongKe);
 
@@ -50,6 +50,7 @@ public View getView(int position, @Nullable View convertView, @NonNull ViewGroup
 
     ThongKe item = getItem(position);
     if (item != null) {
+        holder.soLuongHoaDon.setText(String.valueOf(item.getSoLuongHoaDon()));
         holder.tvSoluong.setText(String.valueOf(item.getSoLuong()));
         holder.tvTongTien.setText(String.valueOf(item.getTongTien()));
     }
@@ -60,5 +61,6 @@ public View getView(int position, @Nullable View convertView, @NonNull ViewGroup
 static class ViewHolder {
     TextView tvSoluong;
     TextView tvTongTien;
+    TextView soLuongHoaDon;
 }
 }

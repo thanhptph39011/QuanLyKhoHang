@@ -89,7 +89,7 @@ public class SanPhamDao {
     }
 
     @SuppressLint("Range")
-    private int getSoLuongSanPham(int maSp) {
+    public int getSoLuongSanPham(int maSp) {
         int soLuong = 0;
         Cursor cursor = db.rawQuery("SELECT soLuong FROM SanPham WHERE maSp = ?", new String[]{String.valueOf(maSp)});
         if (cursor.moveToFirst()) {
@@ -98,25 +98,6 @@ public class SanPhamDao {
         cursor.close();
         return soLuong;
     }
-    public boolean updateSoLuongXuat(int maSp, int soLuongMoi) {
-        // Lấy số lượng hiện có của sản phẩm
-        int soLuongHienCo = getSoLuongSanPham(maSp);
 
-        // Kiểm tra xem có đủ số lượng sản phẩm để xuất hay không
-        if (soLuongHienCo < soLuongMoi) {
-            return false; // Không đủ số lượng
-        }
-
-        // Tính toán số lượng mới sau khi trừ đi
-        int soLuongTong = soLuongHienCo - soLuongMoi;
-
-        // Cập nhật số lượng mới vào bảng SanPham
-        ContentValues values = new ContentValues();
-
-        values.put("soLuong", soLuongTong);
-        int rowsAffected = db.update("SanPham", values, "maSp = ?", new String[]{String.valueOf(maSp)});
-
-        return rowsAffected > 0;
-    }
 
 }

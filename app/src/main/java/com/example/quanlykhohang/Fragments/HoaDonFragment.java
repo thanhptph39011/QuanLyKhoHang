@@ -48,7 +48,6 @@ public class HoaDonFragment extends Fragment {
     FloatingActionButton fab;
     Dialog dialog;
     EditText edMaHd, edtTimKiem, edtSoHd;
-    Spinner spKhachHang;
     TextView tvNgay, tvTk;
 
     RadioGroup radioGroup;
@@ -56,7 +55,7 @@ public class HoaDonFragment extends Fragment {
     ImageView btnSave, btnHuy;
     String tenTk = "";
     SimpleDateFormat sfd = new SimpleDateFormat("yyyy-MM-dd");
-    int maHd;
+    int maHd,loaihoadon;
 
     public HoaDonFragment() {
         // Required empty public constructor
@@ -86,7 +85,7 @@ public class HoaDonFragment extends Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 list.clear();
                 for (HoaDon hd : templist) {
-                    if (hd.getSoHoaDon().contains(charSequence.toString())) {
+                    if (String.valueOf(hd.getMaHd()).contains(charSequence.toString())) {
                         list.add(hd);
                     }
                 }
@@ -104,21 +103,23 @@ public class HoaDonFragment extends Fragment {
                 openDiaLog(getActivity(), 0);
             }
         });
-//        lvHoaDon.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                item = list.get(i);
-//                openDiaLog(getActivity(), 1); //update
-//                return false;
-//            }
-//        });
+        lvHoaDon.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                item = list.get(i);
+                openDiaLog(getActivity(), 1); //update
+                return false;
+            }
+        });
 
         lvHoaDon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), HoaDonCtActivity.class);
                 maHd = list.get(i).getMaHd();
+                loaihoadon=list.get(i).getLoaiHoaDon();
                 intent.putExtra("maHd",maHd);
+                intent.putExtra("maLoaiHoaDon",loaihoadon);
                 startActivity(intent);
 
             }
@@ -151,9 +152,9 @@ public class HoaDonFragment extends Fragment {
             edtSoHd.setText(item.getSoHoaDon());
             tvNgay.setText(sfd.format(item.getNgay()));
             if (item.getLoaiHoaDon() == 1) {
-                rdoNhap.setChecked(true);
+                rdoNhap.setChecked(false);
             } else {
-                rdoXuat.setChecked(false);
+                rdoXuat.setChecked(true);
             }
         }
         btnHuy.setOnClickListener(new View.OnClickListener() {

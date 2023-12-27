@@ -1,7 +1,7 @@
 package com.example.quanlykhohang.Model;
 
 public class HangTon {
-    String maSp;
+    String maSp,maLoai;
     int soLuongTon,tienTonKho;
 
     public HangTon() {
@@ -11,6 +11,21 @@ public class HangTon {
         this.maSp = maSp;
         this.soLuongTon = soLuongTon;
         this.tienTonKho = tienTonKho;
+    }
+
+    public HangTon(String maSp, String maLoai, int soLuongTon, int tienTonKho) {
+        this.maSp = maSp;
+        this.maLoai = maLoai;
+        this.soLuongTon = soLuongTon;
+        this.tienTonKho = tienTonKho;
+    }
+
+    public String getMaLoai() {
+        return maLoai;
+    }
+
+    public void setMaLoai(String maLoai) {
+        this.maLoai = maLoai;
     }
 
     public String getMaSp() {

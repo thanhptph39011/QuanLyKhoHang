@@ -183,8 +183,32 @@ public class SanPhamFragment extends Fragment {
             public void onClick(View view) {
                 if (edtTenSp.equals("") || edtGia.equals("") || edtSL.equals("") || edtMoTa.equals("")) {
                     Toast.makeText(context, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-
+                try{
+                    int gia = Integer.parseInt(edtGia.getText().toString());
+                    if(gia<0){
+                        Toast.makeText(context, "Giá tiền >0", Toast.LENGTH_SHORT).show();
+                        edtGia.requestFocus();
+                        return;
+                    }
+                }catch (Exception e){
+                    Toast.makeText(context, "Giá là sô", Toast.LENGTH_SHORT).show();
+                    edtGia.requestFocus();
+                    return;
+                }
+                try{
+                    int soluong = Integer.parseInt(edtSL.getText().toString());
+                    if(soluong<0){
+                        Toast.makeText(context, "Số lượng >0", Toast.LENGTH_SHORT).show();
+                        edtSL.requestFocus();
+                        return;
+                    }
+                }catch (Exception e){
+                    Toast.makeText(context, "Số lượng là số", Toast.LENGTH_SHORT).show();
+                    edtSL.requestFocus();
+                    return;
+                }
 
                 item = new SanPham();
                 item.setTenSp(edtTenSp.getText().toString());

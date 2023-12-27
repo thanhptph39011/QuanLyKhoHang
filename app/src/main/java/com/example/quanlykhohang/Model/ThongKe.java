@@ -1,7 +1,7 @@
 package com.example.quanlykhohang.Model;
 
 public class ThongKe {
-int soLuong, tongTien;
+int soLuongHoaDon,soLuong, tongTien;
 
     public ThongKe() {
     }
@@ -9,6 +9,20 @@ int soLuong, tongTien;
     public ThongKe(int soLuong, int tongTien) {
         this.soLuong = soLuong;
         this.tongTien = tongTien;
+    }
+
+    public ThongKe(int soLuongHoaDon, int soLuong, int tongTien) {
+        this.soLuongHoaDon = soLuongHoaDon;
+        this.soLuong = soLuong;
+        this.tongTien = tongTien;
+    }
+
+    public int getSoLuongHoaDon() {
+        return soLuongHoaDon;
+    }
+
+    public void setSoLuongHoaDon(int soLuongHoaDon) {
+        this.soLuongHoaDon = soLuongHoaDon;
     }
 
     public int getSoLuong() {

@@ -3,6 +3,7 @@ package com.example.quanlykhohang.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class CtHoaDonAdapter extends ArrayAdapter<CtHoaDon> {
     ImageView btnDelete;
    CtHoaDonDao ctHoaDonDao;
     SanPhamDao sanPhamDao;
+
     private OnDeleteSuccessListener onDeleteSuccessListener;
     public CtHoaDonAdapter(@NonNull Context context,ArrayList<CtHoaDon> list) {
         super(context, 0,list);
@@ -45,6 +47,7 @@ public class CtHoaDonAdapter extends ArrayAdapter<CtHoaDon> {
         }
         return tongTien;
     }
+
     public interface OnDeleteSuccessListener {
         void onDeleteSuccess();
     }
@@ -88,8 +91,7 @@ public class CtHoaDonAdapter extends ArrayAdapter<CtHoaDon> {
                             list.addAll(ctHoaDonDao.getAll(item.getMaHoaDon()));
                             notifyDataSetChanged();
                             Toast.makeText(context, "Delete Succ", Toast.LENGTH_SHORT).show();
-                            KhoDao khoDao = new KhoDao(context);
-
+                           sanPhamDao.updateSoLuong(item.getMaSp(), -item.getSoLuong());
                             if (onDeleteSuccessListener != null) {
                                 onDeleteSuccessListener.onDeleteSuccess();
                             }

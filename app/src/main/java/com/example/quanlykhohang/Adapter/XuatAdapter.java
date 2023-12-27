@@ -21,7 +21,6 @@ public class XuatAdapter extends ArrayAdapter<ThongKe> {
     private Context context;
     XuatFragment fragment;
     ArrayList<ThongKe> list;
-    TextView tvSoluong, tvTongTien;
 
     public XuatAdapter(@NonNull Context context, XuatFragment fragment, ArrayList<ThongKe> list) {
         super(context, 0, list);
@@ -41,8 +40,10 @@ public class XuatAdapter extends ArrayAdapter<ThongKe> {
             v = inflater.inflate(R.layout.item_thongke, parent, false);
 
             holder = new ViewHolder();
+            holder.tvSoluongHd=v.findViewById(R.id.tvSoLuongHd_thongKe);
             holder.tvSoluong = v.findViewById(R.id.tvSoLuong_thongKe);
             holder.tvTongTien = v.findViewById(R.id.tvTongTien_ThongKe);
+
 
             v.setTag(holder);
         } else {
@@ -51,6 +52,7 @@ public class XuatAdapter extends ArrayAdapter<ThongKe> {
 
         ThongKe item = getItem(position);
         if (item != null) {
+            holder.tvSoluongHd.setText(String.valueOf(item.getSoLuongHoaDon()));
             holder.tvSoluong.setText(String.valueOf(item.getSoLuong()));
             holder.tvTongTien.setText(String.valueOf(item.getTongTien()));
         }
@@ -61,5 +63,6 @@ public class XuatAdapter extends ArrayAdapter<ThongKe> {
     static class ViewHolder {
         TextView tvSoluong;
         TextView tvTongTien;
+        TextView tvSoluongHd;
     }
 }

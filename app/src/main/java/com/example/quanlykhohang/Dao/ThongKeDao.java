@@ -31,16 +31,20 @@ public class ThongKeDao {
     @SuppressLint("Range")
     public List<HangTon> thongKeSanPham() {
         List<HangTon> productStatisticsList = new ArrayList<>();
-        String query = "SELECT tenSp, soLuong, (soLuong * gia) AS tongTien FROM SanPham";
+        String query = "SELECT SanPham.maLoai, TheLoai.tenLoai, SUM(SanPham.soLuong) AS soLuong, SUM(SanPham.soLuong * SanPham.gia) AS tongTien " +
+                "FROM SanPham " +
+                "JOIN TheLoai ON SanPham.maLoai = TheLoai.maLoai " +
+                "GROUP BY SanPham.maLoai, TheLoai.tenLoai";
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor.moveToFirst()) {
             do {
-                String tenSp = cursor.getString(cursor.getColumnIndex("tenSp"));
+                String maLoai = cursor.getString(cursor.getColumnIndex("maLoai"));
+                String tenLoai = cursor.getString(cursor.getColumnIndex("tenLoai"));
                 int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
                 int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
-                HangTon productStatistics = new HangTon(tenSp, soLuong, tongTien);
+                HangTon productStatistics = new HangTon(maLoai, tenLoai, soLuong, tongTien);
                 productStatisticsList.add(productStatistics);
             } while (cursor.moveToNext());
         }
@@ -58,18 +62,21 @@ public class ThongKeDao {
         // Lấy ngày hiện tại
         String ngayHienTai = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        // Truy vấn để thống kê số lượng sản phẩm và tổng tiền theo ngày hiện tại
-        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+
+        // Truy vấn để thống kê số lượng hóa đơn xuất, số lượng sản phẩm và tổng tiền trong ngày hiện tại
+        String query = "SELECT COUNT(*) AS soLuongHoaDon, SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia * CtHoaDon.soLuong) AS tongTien " +
                 "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
-                " WHERE HoaDon.loaiHoaDon = 1 AND HoaDon.ngayThang = ? " +
-                "GROUP BY HoaDon.ngayThang";
+                "WHERE HoaDon.loaiHoaDon = 1 AND HoaDon.ngayThang = ?";
+
         Cursor cursor = db.rawQuery(query, new String[]{ngayHienTai});
 
         if (cursor.moveToFirst()) {
+            int soLuongHoaDon = cursor.getInt(cursor.getColumnIndex("soLuongHoaDon"));
             int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
             int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
             ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuongHoaDon(soLuongHoaDon);
             thongKe.setSoLuong(soLuong);
             thongKe.setTongTien(tongTien);
             danhSachThongKe.add(thongKe);
@@ -94,16 +101,18 @@ public class ThongKeDao {
         String endOfWeek = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
 
         // Truy vấn để thống kê số lượng sản phẩm và tổng tiền trong tuần
-        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+        String query = "SELECT COUNT(*) AS soLuongHoaDon, SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
                 "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
                 " WHERE HoaDon.loaiHoaDon = 1 AND HoaDon.ngayThang >= ? AND HoaDon.ngayThang <= ?";
         Cursor cursor = db.rawQuery(query, new String[]{startOfWeek, endOfWeek});
 
         if (cursor.moveToFirst()) {
+            int soLuongHoaDon = cursor.getInt(cursor.getColumnIndex("soLuongHoaDon"));
             int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
             int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
             ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuongHoaDon(soLuongHoaDon);
             thongKe.setSoLuong(soLuong);
             thongKe.setTongTien(tongTien);
             danhSachThongKe.add(thongKe);
@@ -125,17 +134,19 @@ public class ThongKeDao {
         int namHienTai = cal.get(Calendar.YEAR);
 
         // Truy vấn để thống kê số lượng sản phẩm và tổng tiền theo tháng hiện tại
-        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien  " +
+        String query = "SELECT COUNT(*) AS soLuongHoaDon,SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien  " +
                 "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
                 " WHERE HoaDon.loaiHoaDon = 1 AND strftime('%m', HoaDon.ngayThang) = ? AND strftime('%Y', HoaDon.ngayThang) = ?";
 
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(thangHienTai), String.valueOf(namHienTai)});
 
         if (cursor.moveToFirst()) {
+            int soLuongHoaDon = cursor.getInt(cursor.getColumnIndex("soLuongHoaDon"));
             int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
             int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
             ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuongHoaDon(soLuongHoaDon);
             thongKe.setSoLuong(soLuong);
             thongKe.setTongTien(tongTien);
             danhSachThongKe.add(thongKe);
@@ -152,16 +163,18 @@ public class ThongKeDao {
         List<ThongKe> danhSachThongKe = new ArrayList<>();
 
         // Truy vấn để thống kê số lượng sản phẩm và tổng tiền trong khoảng thời gian nhập từ ngày đến ngày
-        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+        String query = "SELECT COUNT(*) AS soLuongHoaDon,SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
                 "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
                 "WHERE HoaDon.loaiHoaDon = 1 AND HoaDon.ngayThang >= ? AND HoaDon.ngayThang <= ?";
         Cursor cursor = db.rawQuery(query, new String[]{startDate, endDate});
 
         if (cursor.moveToFirst()) {
+            int soLuongHoaDon = cursor.getInt(cursor.getColumnIndex("soLuongHoaDon"));
             int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
             int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
             ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuongHoaDon(soLuongHoaDon);
             thongKe.setSoLuong(soLuong);
             thongKe.setTongTien(tongTien);
             danhSachThongKe.add(thongKe);
@@ -181,17 +194,19 @@ public class ThongKeDao {
         String ngayHienTai = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         // Truy vấn để thống kê số lượng sản phẩm và tổng tiền theo ngày hiện tại
-        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+        String query = "SELECT COUNT(*) AS soLuongHoaDon, SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
                 "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
                 " WHERE HoaDon.loaiHoaDon = 0 AND HoaDon.ngayThang = ? " +
                 "GROUP BY HoaDon.ngayThang";
         Cursor cursor = db.rawQuery(query, new String[]{ngayHienTai});
 
         if (cursor.moveToFirst()) {
+            int soLuongHoaDon = cursor.getInt(cursor.getColumnIndex("soLuongHoaDon"));
             int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
             int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
             ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuongHoaDon(soLuongHoaDon);
             thongKe.setSoLuong(soLuong);
             thongKe.setTongTien(tongTien);
             danhSachThongKe.add(thongKe);
@@ -216,16 +231,18 @@ public class ThongKeDao {
         String endOfWeek = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
 
         // Truy vấn để thống kê số lượng sản phẩm và tổng tiền trong tuần
-        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+        String query = "SELECT COUNT(*) AS soLuongHoaDon,SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
                 "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
                 " WHERE HoaDon.loaiHoaDon = 0 AND HoaDon.ngayThang >= ? AND HoaDon.ngayThang <= ?";
         Cursor cursor = db.rawQuery(query, new String[]{startOfWeek, endOfWeek});
 
         if (cursor.moveToFirst()) {
+            int soLuongHoaDon = cursor.getInt(cursor.getColumnIndex("soLuongHoaDon"));
             int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
             int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
             ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuongHoaDon(soLuongHoaDon);
             thongKe.setSoLuong(soLuong);
             thongKe.setTongTien(tongTien);
             danhSachThongKe.add(thongKe);
@@ -247,17 +264,19 @@ public class ThongKeDao {
         int namHienTai = cal.get(Calendar.YEAR);
 
         // Truy vấn để thống kê số lượng sản phẩm và tổng tiền theo tháng hiện tại
-        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien  " +
+        String query = "SELECT COUNT(*) AS soLuongHoaDon,SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien  " +
                 "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
                 " WHERE HoaDon.loaiHoaDon = 0 AND strftime('%m', HoaDon.ngayThang) = ? AND strftime('%Y', HoaDon.ngayThang) = ?";
 
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(thangHienTai), String.valueOf(namHienTai)});
 
         if (cursor.moveToFirst()) {
+            int soLuongHoaDon = cursor.getInt(cursor.getColumnIndex("soLuongHoaDon"));
             int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
             int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
             ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuongHoaDon(soLuongHoaDon);
             thongKe.setSoLuong(soLuong);
             thongKe.setTongTien(tongTien);
             danhSachThongKe.add(thongKe);
@@ -274,16 +293,18 @@ public class ThongKeDao {
         List<ThongKe> danhSachThongKe = new ArrayList<>();
 
         // Truy vấn để thống kê số lượng sản phẩm và tổng tiền trong khoảng thời gian nhập từ ngày đến ngày
-        String query = "SELECT SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
+        String query = "SELECT COUNT(*) AS soLuongHoaDon,SUM(CtHoaDon.soLuong) AS soLuong, SUM(CtHoaDon.donGia*CtHoaDon.soLuong) AS tongTien " +
                 "FROM HoaDon INNER JOIN CtHoaDon ON HoaDon.maHoaDon = CtHoaDon.maHoaDon " +
                 "WHERE HoaDon.loaiHoaDon = 0 AND HoaDon.ngayThang >= ? AND HoaDon.ngayThang <= ?";
         Cursor cursor = db.rawQuery(query, new String[]{startDate, endDate});
 
         if (cursor.moveToFirst()) {
+            int soLuongHoaDon = cursor.getInt(cursor.getColumnIndex("soLuongHoaDon"));
             int soLuong = cursor.getInt(cursor.getColumnIndex("soLuong"));
             int tongTien = cursor.getInt(cursor.getColumnIndex("tongTien"));
 
             ThongKe thongKe = new ThongKe();
+            thongKe.setSoLuongHoaDon(soLuongHoaDon);
             thongKe.setSoLuong(soLuong);
             thongKe.setTongTien(tongTien);
             danhSachThongKe.add(thongKe);

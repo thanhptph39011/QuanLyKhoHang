@@ -4,28 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#12E6DF"
     android:orientation="vertical"
-    android:background="#16B6BC"
     tools:context=".HoaDonCtActivity">
+
     <ImageView
+        android:id="@+id/imgBack"
         android:layout_width="28dp"
         android:layout_height="25dp"
-        android:src="@drawable/baseline_arrow_back_ios_24"
         android:layout_marginLeft="25dp"
-        android:id="@+id/imgBack"
-        android:layout_marginTop="18dp"/>
-
+        android:layout_marginTop="18dp"
+        android:src="@drawable/baseline_arrow_back_ios_24" />
     <TextView
+        android:id="@+id/tvluuHoaDon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
         android:layout_gravity="end"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:textStyle="bold"
-        android:text="Bill: "
+        android:text="Lưu hoá đơn"
+        android:textColor="#F6F5F5"
+        android:textSize="20dp" />
+
+    <TextView
         android:id="@+id/tvTongTien"
-        android:textColor="#ED0D0D"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:text="Bill: "
+        android:textColor="#ED0D0D"
+        android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -48,46 +58,49 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Spinner
             android:id="@+id/spSp_itemHdCt"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
+
         <EditText
             android:id="@+id/edtSoLuong_hdct"
             android:layout_width="10dp"
             android:layout_height="40dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="1"
+            android:background="@drawable/boder"
             android:ems="10"
             android:gravity="center"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/boder"
-            android:inputType="number"
-            android:hint="Số lượng" />
+            android:hint="Số lượng"
+            android:inputType="number" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnSave_hdct"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/white"
+            android:layout_weight="1"
             android:background="@drawable/khung"
-            android:text="Thêm" />
+            android:text="Thêm"
+            android:textColor="@color/white" />
+
     </LinearLayout>
 
 
