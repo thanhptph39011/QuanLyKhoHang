@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Fragments.NhapFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnNgay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/khung"
+            android:textColor="#F44336"
+            android:text="Ngày" />
+
+        <Button
+            android:id="@+id/btnTuan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/khung"
+            android:textColor="#F44336"
+            android:text="Tuần " />
+
+        <Button
+            android:id="@+id/btnThang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/khung"
+            android:textColor="#F44336"
+            android:text="Tháng" />
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtStartDat"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:drawableEnd="@drawable/date"
+            android:drawablePadding="8dp"
+            android:focusable="false"
+            android:hint="Start Date"
+            android:inputType="none"
+            android:paddingLeft="20dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtEndDat"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:drawableEnd="@drawable/date"
+            android:drawablePadding="8dp"
+            android:focusable="false"
+            android:hint="End Date"
+            android:inputType="none"
+            android:paddingLeft="20dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_margin="40dp"
+        android:id="@+id/btnThongKeNgayTuChon"
+        android:textColor="@color/white"
+        android:background="#00BCD4"
+        android:text="Thống kê theo ngày tự chọn"/>
+<ListView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:id="@+id/listView_Nhap"/>
+
+</LinearLayout>

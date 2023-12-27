@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+<item android:id="@+id/hoaDon"
+    android:icon="@drawable/iconbill"
+    android:title="Hoá đơn"
+    />
+    <item android:id="@+id/theLoai"
+        android:icon="@drawable/loai"
+        android:title="Thể loại"
+        />
+    <item android:id="@+id/sanPham"
+        android:icon="@drawable/sp"
+        android:title="Sản phẩm"
+        />
+</menu>
