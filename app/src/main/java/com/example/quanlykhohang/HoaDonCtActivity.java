@@ -18,6 +18,7 @@
     import com.example.quanlykhohang.Adapter.CtHoaDonAdapter;
     import com.example.quanlykhohang.Adapter.SanPhamSpinnerAdapter;
     import com.example.quanlykhohang.Dao.CtHoaDonDao;
+    import com.example.quanlykhohang.Dao.HoaDonDao;
     import com.example.quanlykhohang.Dao.KhoDao;
     import com.example.quanlykhohang.Dao.SanPhamDao;
     import com.example.quanlykhohang.Model.CtHoaDon;
@@ -62,6 +63,7 @@
             //
             maHd = getIntent().getIntExtra("maHd", 0);
             maLoaiHoaDon = getIntent().getIntExtra("maLoaiHoaDon", 0);
+            trangThai = getIntent().getIntExtra("trangThai",0);
             edtsoHd.setText(String.valueOf(maHd));
             capNhapLv();
             //Sp sanPham
@@ -95,7 +97,13 @@
             builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
+                    btnSave.setVisibility(View.GONE);
+                    edtSoLuong.setVisibility(View.GONE);
+                    tvLuuHoaDon.setVisibility(View.GONE);
+                    spnSanPham.setVisibility(View.GONE);
+                    HoaDonDao hoaDonDao = new HoaDonDao(HoaDonCtActivity.this);
+                    hoaDonDao.updateTrangThaiHD(maHd,0);
+                    Toast.makeText(HoaDonCtActivity.this, "Lưu Succ", Toast.LENGTH_SHORT).show();
                 }
             });
             builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
@@ -115,6 +123,12 @@
                     finish();
                 }
             });
+            if(trangThai==0){
+                btnSave.setVisibility(View.GONE);
+                edtSoLuong.setVisibility(View.GONE);
+                tvLuuHoaDon.setVisibility(View.GONE);
+                spnSanPham.setVisibility(View.GONE);
+            }
             btnSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -131,6 +145,7 @@
                             return;
                         }
                     }
+
 
                     hoaDonCt = new CtHoaDon();
                     hoaDonCt.setSoLuong(Integer.parseInt(soluong));

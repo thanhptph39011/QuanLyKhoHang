@@ -23,6 +23,7 @@ import com.example.quanlykhohang.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class XuatFragment extends Fragment {
@@ -53,6 +54,14 @@ public class XuatFragment extends Fragment {
         btnNgay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+                // Đặt giá trị ngày hiện tại vào các trường văn bản
+                edtStartDate.setText(String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth));
+                edtEndDate.setText(String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth));
                 Toast.makeText(getActivity(), "Ngày", Toast.LENGTH_SHORT).show();
                 XuatFragment.this.onClickBtnNgay();
 
@@ -61,6 +70,27 @@ public class XuatFragment extends Fragment {
         btnTuan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setFirstDayOfWeek(Calendar.MONDAY);
+                calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
+                calendar.set(year, month, dayOfMonth);
+                calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                Date startDate = calendar.getTime();
+
+                calendar.set(year, month, dayOfMonth);
+                calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                Date endDate = calendar.getTime();
+
+                String start = sdf.format(startDate);
+                String end = sdf.format(endDate);
+                edtStartDate.setText(start);
+                edtEndDate.setText(end);
                 Toast.makeText(getActivity(), "Tuần", Toast.LENGTH_SHORT).show();
                 XuatFragment.this.onClickBtnTuan();
             }
@@ -68,6 +98,20 @@ public class XuatFragment extends Fragment {
         btnThang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+
+                calendar.set(year, month, 1);
+                Date startDate = calendar.getTime();
+
+                calendar.set(year, month, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+                Date endDate = calendar.getTime();
+
+                String start = sdf.format(startDate);
+                String end = sdf.format(endDate);
+                edtStartDate.setText(start);
+                edtEndDate.setText(end);
                 Toast.makeText(getActivity(), "Tháng", Toast.LENGTH_SHORT).show();
                 XuatFragment.this.onClickBtnThang();
             }
