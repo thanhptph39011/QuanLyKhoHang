@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -42,7 +43,7 @@ public class HoaDonFragment extends Fragment {
     ArrayList<HoaDon> list;
     ArrayList<HoaDon> templist; //khai báo mảng đệm
     static HoaDonDao hoaDonDao;
-    SimpleDateFormat sdf;
+  CheckBox chkTrangThai;
     HoaDonAdapter adapter;
     HoaDon item;
     FloatingActionButton fab;
@@ -55,7 +56,7 @@ public class HoaDonFragment extends Fragment {
     ImageView btnSave, btnHuy;
     String tenTk = "";
     SimpleDateFormat sfd = new SimpleDateFormat("yyyy-MM-dd");
-    int maHd,loaihoadon;
+    int maHd,loaihoadon,trangThaiHd;
 
     public HoaDonFragment() {
         // Required empty public constructor
@@ -118,8 +119,10 @@ public class HoaDonFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), HoaDonCtActivity.class);
                 maHd = list.get(i).getMaHd();
                 loaihoadon=list.get(i).getLoaiHoaDon();
+                trangThaiHd=list.get(i).getXacNhanHd();
                 intent.putExtra("maHd",maHd);
                 intent.putExtra("maLoaiHoaDon",loaihoadon);
+                intent.putExtra("trangThai",trangThaiHd);
                 startActivity(intent);
 
             }
@@ -143,8 +146,13 @@ public class HoaDonFragment extends Fragment {
         radioGroup = dialog.findViewById(R.id.radioGroup);
         rdoNhap = dialog.findViewById(R.id.radioNhap);
         rdoXuat = dialog.findViewById(R.id.radioXuat);
+        chkTrangThai=dialog.findViewById(R.id.chkTrangThai);
+        //
         btnSave = dialog.findViewById(R.id.btnSave_itemAddHd);
         btnHuy = dialog.findViewById(R.id.btnHuy_itemAddHd);
+        //
+        chkTrangThai.setVisibility(View.GONE);
+
         //
         tvNgay.setText("Ngày: " + sfd.format(new Date()));
         if (type != 0) {
@@ -155,6 +163,11 @@ public class HoaDonFragment extends Fragment {
                 rdoNhap.setChecked(false);
             } else {
                 rdoXuat.setChecked(true);
+            }
+            if(item.getXacNhanHd()==1){
+                chkTrangThai.setChecked(false);
+            }else{
+                chkTrangThai.setChecked(true);
             }
         }
         btnHuy.setOnClickListener(new View.OnClickListener() {
@@ -173,10 +186,16 @@ public class HoaDonFragment extends Fragment {
                 item.setMaUser(tvTk.getText().toString());
                 item.setNgay(new Date());
                 item.setSoHoaDon(edtSoHd.getText().toString());
+
                 if (rdoNhap.isChecked()) {
                     item.setLoaiHoaDon(0);
                 } else {
                     item.setLoaiHoaDon(1);
+                }
+                if(chkTrangThai.isChecked()){
+                    item.setXacNhanHd(0);
+                }else{
+                    item.setXacNhanHd(1);
                 }
                 if (type == 0) {
                     //type==0 insert

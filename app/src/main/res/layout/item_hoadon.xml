@@ -109,6 +109,24 @@
             android:text="11/20/2023"
             android:textColor="@color/black" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trạng thái:" />
+
+        <TextView
+            android:id="@+id/tvTrangThai_itemHoaDon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:text="Hoàn thành"
+            android:textColor="@color/black" />
+    </LinearLayout>
 </LinearLayout>
     <ImageView
         android:id="@+id/btnDelete_hoaDon"

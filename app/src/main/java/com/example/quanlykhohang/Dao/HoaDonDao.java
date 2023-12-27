@@ -37,6 +37,7 @@ public class HoaDonDao {
         values.put("maUser", hd.getMaUser());
         values.put("loaiHoaDon", hd.getLoaiHoaDon());
         values.put("ngayThang", sfd.format(hd.getNgay()));
+        values.put("xacNhanHoaDon",hd.getXacNhanHd());
         long row = db.insert("HoaDon", null, values);
         return (row > 0);
     }
@@ -47,9 +48,17 @@ public class HoaDonDao {
         values.put("maUser", hd.getMaUser());
         values.put("loaiHoaDon", hd.getLoaiHoaDon());
         values.put("ngayThang", sfd.format(hd.getNgay()));
+        values.put("xacNhanHoaDon",hd.getXacNhanHd());
         long row = db.update("HoaDon", values, "maHoaDon=?", new String[]{String.valueOf(hd.getMaHd())});
         return (row > 0);
     }
+    public void updateTrangThaiHD(int maHD, int trangthai) {
+        ContentValues values = new ContentValues();
+        values.put("xacNhanHoaDon", trangthai);
+        db.update("HoaDon", values, "MaHoaDon = ?", new String[]{String.valueOf(maHD)});
+        db.close();
+    }
+
 
     public boolean deleteHoaDon(int maHd) {
         long row = db.delete("HoaDon", "maHoaDon=?", new String[]{String.valueOf(maHd)});
@@ -71,6 +80,7 @@ public class HoaDonDao {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            obj.setXacNhanHd(Integer.parseInt(cursor.getString(cursor.getColumnIndex("xacNhanHoaDon"))));
             list.add(obj);
         }
         return list;

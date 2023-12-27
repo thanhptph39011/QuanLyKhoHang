@@ -1,6 +1,7 @@
 package com.example.quanlykhohang.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ public class HoaDonAdapter extends ArrayAdapter {
     private Context context;
     private ArrayList<HoaDon> list;
     HoaDonFragment fragment;
-    TextView tvMaHd, tvSoHD, tvMaThuKho, tvloaiHd, tvNgay;
+    TextView tvMaHd, tvSoHD, tvMaThuKho, tvloaiHd, tvNgay,tvTrangThai;
     ImageView btnDelete;
     SimpleDateFormat sfd = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -48,6 +49,7 @@ public class HoaDonAdapter extends ArrayAdapter {
             tvMaThuKho = v.findViewById(R.id.tvTenThuKho_itemHoaDon);
             tvloaiHd = v.findViewById(R.id.tvLoaiHd_itemHoaDon);
             tvNgay = v.findViewById(R.id.tvNgay_itemHoaDon);
+            tvTrangThai=v.findViewById(R.id.tvTrangThai_itemHoaDon);
             btnDelete = v.findViewById(R.id.btnDelete_hoaDon);
 //
             tvMaHd.setText(item.getMaHd() + "");
@@ -57,6 +59,13 @@ public class HoaDonAdapter extends ArrayAdapter {
                 tvNgay.setText(sfd.format(item.getNgay()));
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            if(item.getXacNhanHd()==0){
+                tvTrangThai.setText(" Đã hoàn thành");
+                tvTrangThai.setTextColor(Color.BLUE);
+            }else{
+                tvTrangThai.setText("Chưa hoàn thành");
+                tvTrangThai.setTextColor(Color.RED);
             }
             if (item.getLoaiHoaDon() == 0) {
                 tvloaiHd.setText("Nhập");

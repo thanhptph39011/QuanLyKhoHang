@@ -8,16 +8,26 @@ private String soHoaDon;
 private String maUser;
 private int loaiHoaDon;
 private Date ngay;
+private int xacNhanHd;
 
     public HoaDon() {
     }
 
-    public HoaDon(int maHd, String soHoaDon, String maUser, int loaiHoaDon, Date ngay) {
+    public HoaDon(int maHd, String soHoaDon, String maUser, int loaiHoaDon, Date ngay,int xacNhanHd) {
         this.maHd = maHd;
         this.soHoaDon = soHoaDon;
         this.maUser = maUser;
         this.loaiHoaDon = loaiHoaDon;
         this.ngay = ngay;
+        this.xacNhanHd=xacNhanHd;
+    }
+
+    public int getXacNhanHd() {
+        return xacNhanHd;
+    }
+
+    public void setXacNhanHd(int xacNhanHd) {
+        this.xacNhanHd = xacNhanHd;
     }
 
     public int getMaHd() {
