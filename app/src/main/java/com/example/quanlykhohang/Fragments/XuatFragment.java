@@ -72,7 +72,6 @@ public class XuatFragment extends Fragment {
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setFirstDayOfWeek(Calendar.MONDAY);
-                calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
@@ -82,15 +81,14 @@ public class XuatFragment extends Fragment {
                 calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
                 Date startDate = calendar.getTime();
 
-                calendar.set(year, month, dayOfMonth);
-                calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                calendar.add(Calendar.DATE, 6); // Thêm 6 ngày để có 1 tuần đầy đủ
                 Date endDate = calendar.getTime();
 
                 String start = sdf.format(startDate);
                 String end = sdf.format(endDate);
                 edtStartDate.setText(start);
                 edtEndDate.setText(end);
+
                 Toast.makeText(getActivity(), "Tuần", Toast.LENGTH_SHORT).show();
                 XuatFragment.this.onClickBtnTuan();
             }
