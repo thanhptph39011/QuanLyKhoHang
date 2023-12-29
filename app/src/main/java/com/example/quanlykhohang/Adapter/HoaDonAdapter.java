@@ -1,6 +1,7 @@
 package com.example.quanlykhohang.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.quanlykhohang.Fragments.HoaDonFragment;
+import com.example.quanlykhohang.HoaDonCtActivity;
 import com.example.quanlykhohang.Model.HoaDon;
 import com.example.quanlykhohang.R;
 
@@ -23,7 +25,7 @@ public class HoaDonAdapter extends ArrayAdapter {
     private Context context;
     private ArrayList<HoaDon> list;
     HoaDonFragment fragment;
-    TextView tvMaHd, tvSoHD, tvMaThuKho, tvloaiHd, tvNgay,tvTrangThai;
+    TextView tvMaHd, tvSoHD, tvMaThuKho, tvloaiHd, tvNgay,tvTrangThai,tvChiTietHd;
     ImageView btnDelete;
     SimpleDateFormat sfd = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -50,6 +52,7 @@ public class HoaDonAdapter extends ArrayAdapter {
             tvloaiHd = v.findViewById(R.id.tvLoaiHd_itemHoaDon);
             tvNgay = v.findViewById(R.id.tvNgay_itemHoaDon);
             tvTrangThai=v.findViewById(R.id.tvTrangThai_itemHoaDon);
+            tvChiTietHd =v.findViewById(R.id.tvCtHd);
             btnDelete = v.findViewById(R.id.btnDelete_hoaDon);
 //
             tvMaHd.setText(item.getMaHd() + "");
@@ -73,6 +76,16 @@ public class HoaDonAdapter extends ArrayAdapter {
                 tvloaiHd.setText("Xuất");
             }
         }
+        tvChiTietHd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, HoaDonCtActivity.class);
+                intent.putExtra("maHd", item.getMaHd());
+                intent.putExtra("maLoaiHoaDon",item.getLoaiHoaDon());
+                intent.putExtra("trangThai",item.getXacNhanHd());
+                context.startActivity(intent);
+            }
+        });
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

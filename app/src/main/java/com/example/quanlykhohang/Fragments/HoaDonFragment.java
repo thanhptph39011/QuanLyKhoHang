@@ -113,20 +113,20 @@ public class HoaDonFragment extends Fragment {
             }
         });
 
-        lvHoaDon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity(), HoaDonCtActivity.class);
-                maHd = list.get(i).getMaHd();
-                loaihoadon=list.get(i).getLoaiHoaDon();
-                trangThaiHd=list.get(i).getXacNhanHd();
-                intent.putExtra("maHd",maHd);
-                intent.putExtra("maLoaiHoaDon",loaihoadon);
-                intent.putExtra("trangThai",trangThaiHd);
-                startActivity(intent);
-
-            }
-        });
+//        lvHoaDon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Intent intent = new Intent(getActivity(), HoaDonCtActivity.class);
+//                maHd = list.get(i).getMaHd();
+//                loaihoadon=list.get(i).getLoaiHoaDon();
+//                trangThaiHd=list.get(i).getXacNhanHd();
+//                intent.putExtra("maHd",maHd);
+//                intent.putExtra("maLoaiHoaDon",loaihoadon);
+//                intent.putExtra("trangThai",trangThaiHd);
+//                startActivity(intent);
+//
+//            }
+//        });
         return v;
     }
 
@@ -164,6 +164,7 @@ public class HoaDonFragment extends Fragment {
             } else {
                 rdoXuat.setChecked(true);
             }
+            chkTrangThai.setVisibility(View.VISIBLE);
             if(item.getXacNhanHd()==1){
                 chkTrangThai.setChecked(false);
             }else{

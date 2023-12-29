@@ -31,12 +31,16 @@ public class CtHoaDonAdapter extends ArrayAdapter<CtHoaDon> {
     ImageView btnDelete;
    CtHoaDonDao ctHoaDonDao;
     SanPhamDao sanPhamDao;
+    private int trangThai;
+    private int loaiHd;
 
     private OnDeleteSuccessListener onDeleteSuccessListener;
-    public CtHoaDonAdapter(@NonNull Context context,ArrayList<CtHoaDon> list) {
+    public CtHoaDonAdapter(@NonNull Context context,ArrayList<CtHoaDon> list,int trangThai,int loaiHd) {
         super(context, 0,list);
         this.context = context;
         this.list = list;
+        this.trangThai=trangThai;
+        this.loaiHd=loaiHd;
         ctHoaDonDao = new CtHoaDonDao(context);
     }
     public int tinhTongTien() {
@@ -70,12 +74,23 @@ public class CtHoaDonAdapter extends ArrayAdapter<CtHoaDon> {
             tvThanhTien = view.findViewById(R.id.tvGia_itemHoaDonCt);
             btnDelete = view.findViewById(R.id.btnDelete_hoaDonCt);
             //
+            if(trangThai==0){
+                btnDelete.setVisibility(View.GONE);
+            }else{
+                btnDelete.setVisibility(View.VISIBLE);
+            }
+            //
+
             sanPhamDao = new SanPhamDao(context);
             SanPham sp = sanPhamDao.getID(String.valueOf(item.getMaSp()));
             tvSp.setText(sp.getTenSp() + "");
             tvSl.setText(item.getSoLuong() + "");
             tvThanhTien.setText(item.getDonGia() * item.getSoLuong() + "");
+
+
         }
+
+
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,7 +106,12 @@ public class CtHoaDonAdapter extends ArrayAdapter<CtHoaDon> {
                             list.addAll(ctHoaDonDao.getAll(item.getMaHoaDon()));
                             notifyDataSetChanged();
                             Toast.makeText(context, "Delete Succ", Toast.LENGTH_SHORT).show();
-                           sanPhamDao.updateSoLuong(item.getMaSp(), -item.getSoLuong());
+                            if(loaiHd==0){
+                                sanPhamDao.updateSoLuong(item.getMaSp(), -item.getSoLuong());
+                            }else{
+                                sanPhamDao.updateSoLuong(item.getMaSp(), item.getSoLuong());
+                            }
+
                             if (onDeleteSuccessListener != null) {
                                 onDeleteSuccessListener.onDeleteSuccess();
                             }
