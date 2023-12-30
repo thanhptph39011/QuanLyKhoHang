@@ -3,6 +3,9 @@ package com.example.quanlykhohang.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +57,12 @@ public class HoaDonAdapter extends ArrayAdapter {
             tvTrangThai=v.findViewById(R.id.tvTrangThai_itemHoaDon);
             tvChiTietHd =v.findViewById(R.id.tvCtHd);
             btnDelete = v.findViewById(R.id.btnDelete_hoaDon);
-//
+//gạch chân tvCthd
+            String text = tvChiTietHd.getText().toString();
+            SpannableString spannableString = new SpannableString(text);
+            spannableString.setSpan(new UnderlineSpan(), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tvChiTietHd.setText(spannableString);
+// set dữ liệu
             tvMaHd.setText(item.getMaHd() + "");
             tvSoHD.setText(item.getSoHoaDon());
             tvMaThuKho.setText(item.getMaUser());
