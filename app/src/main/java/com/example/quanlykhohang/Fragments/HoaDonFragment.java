@@ -159,12 +159,12 @@ public class HoaDonFragment extends Fragment {
             edMaHd.setText(String.valueOf(item.getMaHd()));
             edtSoHd.setText(item.getSoHoaDon());
             tvNgay.setText(sfd.format(item.getNgay()));
-            if (item.getLoaiHoaDon() == 1) {
+            chkTrangThai.setVisibility(View.VISIBLE);
+            if (item.getLoaiHoaDon() == 0) {
                 rdoNhap.setChecked(false);
             } else {
                 rdoXuat.setChecked(true);
             }
-            chkTrangThai.setVisibility(View.VISIBLE);
             if(item.getXacNhanHd()==1){
                 chkTrangThai.setChecked(false);
             }else{
